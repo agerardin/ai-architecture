@@ -1,18 +1,13 @@
 """
 event_bus/factory.py
-Factory to select and instantiate the appropriate EventBus implementation.
+Factory to instantiate the appropriate EventBus implementation.
 """
+
+from .event_bus import EventBus
 from .redis_bus import RedisEventBus
 
-class EventBusFactory:
-    def __init__(self, provider: str = 'redis', **kwargs):
-        if provider == 'redis':
-            self.bus = RedisEventBus(**kwargs)
-        else:
-            raise NotImplementedError(f"Provider {provider} not implemented.")
-
-    async def publish(self, channel: str, message):
-        await self.bus.publish(channel, message)
-
-    async def subscribe(self, channel: str, callback):
-        await self.bus.subscribe(channel, callback)
+def create_event_bus(provider: str = 'redis', **kwargs) -> EventBus:
+    if provider == 'redis':
+        return RedisEventBus(**kwargs)
+    else:
+        raise NotImplementedError(f"Provider {provider} not implemented.")
