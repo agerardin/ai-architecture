@@ -16,6 +16,7 @@ MESSAGE_TIMEOUT = int(os.getenv("REDIS_TEST_MESSAGE_TIMEOUT", 2))  # seconds
 REDIS_READY_TIMEOUT = float(os.getenv("REDIS_READY_TIMEOUT", 3.0))  # seconds
 REDIS_READY_PAUSE = float(os.getenv("REDIS_READY_PAUSE", 0.2))  # seconds
 
+
 @pytest_asyncio.fixture
 async def redis_event_bus(docker_services):
     def is_redis_responsive():
@@ -28,24 +29,27 @@ async def redis_event_bus(docker_services):
 
     # Wait for Redis to be ready using ping
     docker_services.wait_until_responsive(
-        timeout=REDIS_READY_TIMEOUT,
-        pause=REDIS_READY_PAUSE,
-        check=is_redis_responsive
+        timeout=REDIS_READY_TIMEOUT, pause=REDIS_READY_PAUSE, check=is_redis_responsive
     )
 
     bus = RedisEventBus()
     yield bus
     await bus.close()
 
+
 # Specify docker-compose files in configurable path
 @pytest.fixture(scope="session")
 def docker_compose_file(pytestconfig):
-    return [os.path.join(str(pytestconfig.rootdir), path) for path in DOCKER_COMPOSE_FILES]
+    return [
+        os.path.join(str(pytestconfig.rootdir), path) for path in DOCKER_COMPOSE_FILES
+    ]
+
 
 # Pin the project name to avoid creating multiple stacks
 @pytest.fixture(scope="session")
 def docker_compose_project_name() -> str:
     return "ai-architecture-tests"
+
 
 # Stop the stack before starting a new one
 @pytest.fixture(scope="session")

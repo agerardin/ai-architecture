@@ -11,13 +11,19 @@ requires-python = ">=3.13"
 
 dependencies = [
     "pydantic>=2.0",
-    "redis>=5.0"
+    "redis>=5.0",
+    "types-redis>=4.6.0.20241004",
 ]
-optional-dependencies = { dev = [
-    "pytest>=7.0",
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4",
     "pytest-asyncio>=0.21",
-    "pytest-docker>=2.0"
-] }
+    "pytest-docker>=2.0",
+    "ruff>=0.4.4",
+    "mypy>=1.8.0",
+    "pre-commit>=3.7.0"
+]
 
 [build-system]
 requires = ["setuptools", "wheel"]

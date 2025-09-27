@@ -2,11 +2,11 @@
 Tests for Redis message publishing and subscribing.
 """
 
-
 from conftest import MESSAGE_TIMEOUT
 import pytest
 import asyncio
 from ai_architecture.infra.context.context import SessionContext
+
 
 @pytest.mark.asyncio
 async def test_redis_pubsub(redis_event_bus):
@@ -30,7 +30,7 @@ async def test_redis_pubsub(redis_event_bus):
         subscription_active.set()  # Signal that subscription is active
 
     # Start subscription and wait for readiness
-    sub_task = asyncio.create_task(subscribe_and_signal())
+    asyncio.create_task(subscribe_and_signal())
     await subscription_active.wait()
 
     # Publish a message and wait for delivery

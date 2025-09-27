@@ -13,14 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+
 import asyncio
 import json
 from redis.asyncio import Redis
 from typing import Any, Dict, Callable
 from .event_bus import EventBus
 
+
 class RedisEventBus(EventBus):
-    def __init__(self, host='localhost', port=6379, db=0, redis_client=None):
+    def __init__(self, host="localhost", port=6379, db=0, redis_client=None):
         if redis_client is not None:
             self.redis = redis_client
         else:
@@ -30,23 +32,29 @@ class RedisEventBus(EventBus):
     async def publish(self, channel: str, message: Dict[str, Any]) -> None:
         await self.redis.publish(channel, json.dumps(message))
 
-    async def subscribe(self, channel: str, callback: Callable[[Dict[str, Any]], Any]) -> None:
+    async def subscribe(
+        self, channel: str, callback: Callable[[Dict[str, Any]], Any]
+    ) -> None:
         key = (channel, id(callback))
         if key in self._subscriptions:
             return
+
         async def listen():
             pubsub = self.redis.pubsub()
             await pubsub.subscribe(channel)
             async for item in pubsub.listen():
-                if item['type'] == 'message':
-                    data = json.loads(item['data'])
+                if item["type"] == "message":
+                    data = json.loads(item["data"])
                     result = callback(data)
                     if asyncio.iscoroutine(result):
                         await result
+
         task = asyncio.create_task(listen())
         self._subscriptions[key] = task
 
-    async def unsubscribe(self, channel: str, callback: Callable[[Dict[str, Any]], Any]) -> None:
+    async def unsubscribe(
+        self, channel: str, callback: Callable[[Dict[str, Any]], Any]
+    ) -> None:
         key = (channel, id(callback))
         task = self._subscriptions.pop(key, None)
         if task:
@@ -63,7 +71,7 @@ class RedisEventBus(EventBus):
         if tasks:
             await asyncio.gather(*tasks, return_exceptions=True)
         self._subscriptions.clear()
-        if hasattr(self.redis, 'aclose'):
+        if hasattr(self.redis, "aclose"):
             await self.redis.aclose()
-        elif hasattr(self.redis, 'close'):
+        elif hasattr(self.redis, "close"):
             await self.redis.close()
