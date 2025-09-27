@@ -5,15 +5,11 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
-      redis:
-        image: redis:8.2.1-bookworm
-        ports:
-          - 6379:6379
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
