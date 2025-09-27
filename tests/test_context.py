@@ -2,7 +2,7 @@
 tests/test_context.py
 Unit tests for Context and SessionContext models.
 """
-from infra.context.context import Context, SessionContext
+from ai_architecture.infra.context.context import Context, SessionContext
 
 def test_context_instantiation():
     ctx = Context(agent_id="agent-123", action="say_hello", filters={"priority": "high"})

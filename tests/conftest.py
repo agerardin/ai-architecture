@@ -1,7 +1,7 @@
 import os
 import pytest
 import pytest_asyncio
-from infra.event_bus.redis_bus import RedisEventBus
+from ai_architecture.infra.event_bus.redis_bus import RedisEventBus
 import redis
 
 # Specify docker-compose files for the test environment

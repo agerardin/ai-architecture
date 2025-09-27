@@ -6,7 +6,7 @@ Tests for Redis message publishing and subscribing.
 from conftest import MESSAGE_TIMEOUT
 import pytest
 import asyncio
-from infra.context.context import SessionContext
+from ai_architecture.infra.context.context import SessionContext
 
 @pytest.mark.asyncio
 async def test_redis_pubsub(redis_event_bus):
