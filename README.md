@@ -53,6 +53,8 @@ Pull requests and issues are welcome!
 Apache 2.0 — see LICENSE for details.
 
 ## Next Steps
+- Event Bus Abstraction
+- Context Object
 - Build orchestrator agent
 - Set up logging/monitoring
 - Integrate LLM proxy
