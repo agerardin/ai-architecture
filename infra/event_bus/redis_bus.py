@@ -10,6 +10,7 @@ from .event_bus import EventBus
 class RedisEventBus(EventBus):
     """
     Async Redis-based EventBus implementation.
+    
     Each worker/process should instantiate its own RedisEventBus for isolation.
     Subscriptions are tracked per instance to prevent duplicate (channel, callback) listeners.
     Multiple workers can subscribe to the same channel for parallel processing and load balancing.
@@ -58,3 +59,35 @@ class RedisEventBus(EventBus):
         # Start the listener task and track it
         task = asyncio.create_task(listen())
         self._subscriptions[key] = task
+
+
+    async def unsubscribe(self, channel: str, callback: Callable[[Dict[str, Any]], Any]) -> None:
+        """
+        Unsubscribe the callback from the channel and cancel the associated task.
+        """
+        key = (channel, id(callback))
+        task = self._subscriptions.pop(key, None)
+        if task:
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+
+    async def close(self):
+        """
+        Gracefully cancel all active subscription tasks in parallel and close Redis connection.
+        """
+        # Cancel all subscription tasks in parallel
+        tasks = list(self._subscriptions.values())
+        for task in tasks:
+            task.cancel()
+        if tasks:
+            # NOTE gather expect arguments, not a list
+            await asyncio.gather(*tasks, return_exceptions=True)
+        self._subscriptions.clear()
+        # Close Redis connection if possible
+        if hasattr(self.redis, 'aclose'):
+            await self.redis.aclose()
+        elif hasattr(self.redis, 'close'):
+            await self.redis.close()

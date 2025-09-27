@@ -1,5 +1,4 @@
 """
-event_bus/factory.py
 Factory to instantiate the appropriate EventBus implementation.
 """
 

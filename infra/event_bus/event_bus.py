@@ -1,5 +1,4 @@
 """
-event_bus/base.py
 Defines the abstract EventBus interface for agent communication.
 """
 from abc import ABC, abstractmethod
@@ -14,4 +13,9 @@ class EventBus(ABC):
     @abstractmethod
     async def subscribe(self, channel: str, callback) -> None:
         """Subscribe to a channel with a callback (async)."""
+        pass
+
+    @abstractmethod
+    async def unsubscribe(self, channel: str, callback) -> None:
+        """Unsubscribe the callback from the channel (async)."""
         pass
