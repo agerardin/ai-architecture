@@ -1,6 +1,0 @@
-version: '3'
-services:
-  redis:
-    image: redis:8.2.1-bookworm
-    ports:
-      - "6379:6379"
