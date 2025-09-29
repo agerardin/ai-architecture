@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  litellm_db:
+    image: postgres:17.6-bookworm
+    container_name: litellm_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${LITELLM_DB_USER}
+      POSTGRES_PASSWORD: ${LITELLM_DB_PASSWORD}
+      POSTGRES_DB: ${LITELLM_DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${LITELLM_DB_NAME} -U ${LITELLM_DB_USER}"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+
+  litellm_proxy:
+    image: ghcr.io/berriai/litellm:main-stable
+    container_name: litellm_proxy
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env # Load local .env file
+    volumes:
+      - ./config.yaml:/app/config.yaml
+    # You can change the port or number of workers as per your requirements or pass any new supported CLI argument. Make sure the port passed here matches with the container port defined above in `ports` value
+    command: [ "--config", "/app/config.yaml", "--port", "4000"]
+    depends_on:
+      - litellm_db
+    healthcheck:  # Defines the health check configuration for the container
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 http://localhost:4000/health/liveliness || exit 1" ]  # Command to execute for health check
+      interval: 30s  # Perform health check every 30 seconds
+      timeout: 10s   # Health check command times out after 10 seconds
+      retries: 3     # Retry up to 3 times if health check fails
+      start_period: 40s  # Wait 40 seconds after container start before beginning health checks
+
+volumes:
+  postgres_data:
+    name: litellm_postgres_data
