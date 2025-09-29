@@ -10,10 +10,8 @@ model_list:
       # optionally we can substitute environment variables this way
       api_key: os.environ/OPENAI_API_KEY
       api_base: https://api.openai.com/v1
-
-  # # Ollama Mistral model
-  # - model_name: mistral-7b
-  #   litellm_params:
-  #     model: mistral
-  #     api_base: ${OLLAMA_API_BASE:-http://host.docker.internal:11434/v1}
-  #     # No api_key needed for local Ollama
+  - model_name: ollama-mistral-7b
+    litellm_params:
+      model: ollama/mistral:7b
+      api_base: http://ollama:11434
+      # No api_key needed for local Ollama

@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama:0.12.3
+    container_name: ollama
+    ports:
+      - "11433:11434"
+    # environment:
+      # Add any required environment variables here
+    volumes:
+      - $OLLAMA_MODELS_PATH:/root/.ollama
+    restart: unless-stopped
+    networks:
+      - shared_net
+    mem_limit: 10g
+
+
+# For modular deployment we create a external network that can be shared across multiple docker-compose files
+networks:
+  shared_net:
+    name: shared_net
+    external: true

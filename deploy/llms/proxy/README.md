@@ -7,6 +7,9 @@ Add keys management, metering, budget etc...
 
 rename `.env.sample` to `.env` and provide missing values
 
+Make sure the shared network has been created (for integration with other running containers)
+`docker network create shared_net`
+
 Spin the proxy
 
 ```sh
@@ -102,3 +105,32 @@ curl 'http://0.0.0.0:4000/key/delete' \
   --header "Authorization: Bearer $LITELLM_MASTER_KEY" \
   --data-raw "{\"keys\": [\"$VIRTUAL_KEY\"]}"
 ```
+
+
+## UI
+
+
+The ui is accessible at to manage keys and track metrics :
+`http://localhost:4000/ui`
+
+Some functionalities are still work in progress.
+
+
+## Ollama integration
+
+Test using the proxy to make the request:
+```sh
+curl --location 'http://0.0.0.0:4000/chat/completions' \
+  --header 'Content-Type: application/json' \
+  --header "Authorization: Bearer $LITELLM_MASTER_KEY" \
+  --data '{
+    "model": "ollama-mistral-7b",
+    "messages": [
+      {"role": "user", "content": "What is the capital of France?"}
+    ]
+  }'
+```
+
+
+
+
