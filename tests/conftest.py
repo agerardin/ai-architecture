@@ -6,7 +6,7 @@ import redis
 
 # Specify docker-compose files for the test environment
 DOCKER_COMPOSE_FILES = [
-    "deploy/docker-compose.yml",
+    "deploy/redis/docker-compose.yml",
     # Add more compose files here if needed
 ]
 

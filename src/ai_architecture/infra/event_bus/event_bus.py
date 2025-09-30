@@ -30,3 +30,7 @@ class EventBus(ABC):
     @abstractmethod
     async def unsubscribe(self, channel: str, callback) -> None:
         pass
+
+    @abstractmethod
+    async def close(self) -> None:
+        pass
