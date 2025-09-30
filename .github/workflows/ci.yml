@@ -37,6 +37,10 @@ jobs:
         run: |
           source .venv/bin/activate
           mypy src
+
+      - name: Create shared Docker network
+        run: docker network create shared_net || true
+
       - name: Run tests
         env:
           REDIS_HOST: localhost

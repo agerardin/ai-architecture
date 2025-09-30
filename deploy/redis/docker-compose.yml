@@ -4,3 +4,10 @@ services:
     image: redis:8.2.1-bookworm
     ports:
       - "6379:6379"
+    networks:
+      - shared_net
+
+    
+networks:
+  shared_net:
+    external: true
