@@ -4,9 +4,19 @@ services:
     image: redis:8.2.1-bookworm
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - shared_net
 
+volumes:
+  redis_data:
+    name: redis_data
     
 networks:
   shared_net:
