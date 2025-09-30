@@ -19,6 +19,7 @@ REDIS_READY_PAUSE = float(os.getenv("REDIS_READY_PAUSE", 0.2))  # seconds
 
 @pytest_asyncio.fixture
 async def redis_event_bus(docker_services):
+    # NOTE this will attend to start a docker container which may fail if redis is already running locally on this port
     def is_redis_responsive():
         try:
             client = redis.Redis(host="localhost", port=6379, socket_timeout=1)
