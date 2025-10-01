@@ -21,14 +21,9 @@ services:
     depends_on:
       prefect_db:
         condition: service_healthy
-    # Requires external Redis service on shared_net
-    healthcheck:
-      test: ["CMD-SHELL", "redis-cli -h redis ping || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     environment:
       PREFECT_API_DATABASE_CONNECTION_URL: postgresql+asyncpg://prefect:prefect@prefect_db:5432/prefect
+      PREFECT_UI_API_URL: http://localhost:4200/api
       PREFECT_SERVER_API_HOST: 0.0.0.0
       PREFECT_MESSAGING_BROKER: prefect_redis.messaging
       PREFECT_MESSAGING_CACHE: prefect_redis.messaging
@@ -46,12 +41,6 @@ services:
     depends_on:
       prefect_db:
         condition: service_healthy
-    # Requires external Redis service on shared_net
-    healthcheck:
-      test: ["CMD-SHELL", "redis-cli -h redis ping || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     environment:
       PREFECT_API_DATABASE_CONNECTION_URL: postgresql+asyncpg://prefect:prefect@prefect_db:5432/prefect
       PREFECT_MESSAGING_BROKER: prefect_redis.messaging
