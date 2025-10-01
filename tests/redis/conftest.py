@@ -5,9 +5,9 @@ from ai_architecture.infra.event_bus.redis_bus import RedisEventBus
 import redis
 
 # Specify docker-compose files for the test environment
+# We could copy file from deploy and update port but for simplicity we keep a separate file here.
 DOCKER_COMPOSE_FILES = [
-    "deploy/redis/docker-compose.yml",
-    # Add more compose files here if needed
+    "tests/redis/docker-compose.yml",
 ]
 
 
@@ -19,6 +19,7 @@ REDIS_READY_PAUSE = float(os.getenv("REDIS_READY_PAUSE", 0.2))  # seconds
 
 @pytest_asyncio.fixture
 async def redis_event_bus(docker_services):
+    # NOTE this will attend to start a docker container which may fail if redis is already running locally on this port
     def is_redis_responsive():
         try:
             client = redis.Redis(host="localhost", port=6379, socket_timeout=1)
