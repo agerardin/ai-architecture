@@ -1,0 +1,84 @@
+services:
+  prefect_db:
+    image: postgres:17.6-bookworm
+    environment:
+      # Make sure to change these credentials as per your requirements
+      POSTGRES_USER: prefect
+      POSTGRES_PASSWORD: prefect
+      POSTGRES_DB: prefect
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - shared_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U prefect"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  prefect-server:
+    image: prefecthq/prefect:3-latest
+    depends_on:
+      prefect_db:
+        condition: service_healthy
+    # Requires external Redis service on shared_net
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -h redis ping || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      PREFECT_API_DATABASE_CONNECTION_URL: postgresql+asyncpg://prefect:prefect@prefect_db:5432/prefect
+      PREFECT_SERVER_API_HOST: 0.0.0.0
+      PREFECT_MESSAGING_BROKER: prefect_redis.messaging
+      PREFECT_MESSAGING_CACHE: prefect_redis.messaging
+      PREFECT_REDIS_MESSAGING_HOST: redis
+      PREFECT_REDIS_MESSAGING_PORT: 6379
+      PREFECT_REDIS_MESSAGING_DB: 0
+    networks:
+      - shared_net
+    command: prefect server start --no-services
+    ports:
+      - "4200:4200"
+
+  prefect-services:
+    image: prefecthq/prefect:3-latest
+    depends_on:
+      prefect_db:
+        condition: service_healthy
+    # Requires external Redis service on shared_net
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -h redis ping || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      PREFECT_API_DATABASE_CONNECTION_URL: postgresql+asyncpg://prefect:prefect@prefect_db:5432/prefect
+      PREFECT_MESSAGING_BROKER: prefect_redis.messaging
+      PREFECT_MESSAGING_CACHE: prefect_redis.messaging
+      PREFECT_REDIS_MESSAGING_HOST: redis
+      PREFECT_REDIS_MESSAGING_PORT: 6379
+      PREFECT_REDIS_MESSAGING_DB: 0
+    networks:
+      - shared_net
+    command: prefect server services start
+
+  prefect-worker:
+    image: prefecthq/prefect:3-latest
+    depends_on:
+      prefect-server:
+        condition: service_started
+    environment:
+      PREFECT_API_URL: http://prefect-server:4200/api
+    networks:
+      - shared_net
+    command: prefect worker start --pool local-pool
+
+
+volumes:
+  postgres_data:
+    name: prefect_postgres_data
+
+networks:
+  shared_net:
+    external: true

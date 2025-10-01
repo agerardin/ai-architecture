@@ -21,5 +21,7 @@ agent = Agent(
     model=model,
 )
 
-response = agent.run_sync("What is the capital of France?")
+response = agent.run_sync(
+    "Are you able to generate solid sql queries given a schema and a query?"
+)
 print(response.output)
