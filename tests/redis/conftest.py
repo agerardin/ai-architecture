@@ -12,9 +12,9 @@ DOCKER_COMPOSE_FILES = [
 
 
 # Test robustness settings
-MESSAGE_TIMEOUT = int(os.getenv("REDIS_TEST_MESSAGE_TIMEOUT", 2))  # seconds
-REDIS_READY_TIMEOUT = float(os.getenv("REDIS_READY_TIMEOUT", 3.0))  # seconds
-REDIS_READY_PAUSE = float(os.getenv("REDIS_READY_PAUSE", 0.2))  # seconds
+MESSAGE_TIMEOUT = int(os.getenv("REDIS_TEST_MESSAGE_TIMEOUT", 10))  # seconds
+REDIS_READY_TIMEOUT = float(os.getenv("REDIS_READY_TIMEOUT", 10.0))  # seconds
+REDIS_READY_PAUSE = float(os.getenv("REDIS_READY_PAUSE", 0.5))  # seconds
 
 
 @pytest_asyncio.fixture
