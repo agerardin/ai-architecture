@@ -33,7 +33,7 @@ async def redis_event_bus(docker_services):
         timeout=REDIS_READY_TIMEOUT, pause=REDIS_READY_PAUSE, check=is_redis_responsive
     )
 
-    bus = RedisEventBus()
+    bus = RedisEventBus(host="localhost", port=63379)
     yield bus
     await bus.close()
 
