@@ -5,7 +5,7 @@ services:
     ports:
       - "63379:6379"
     volumes:
-      - redis_data:/data
+      - redis_data_test:/data
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping"]
       interval: 5s
@@ -15,8 +15,8 @@ services:
       - shared_net
 
 volumes:
-  redis_data:
-    name: redis_data
+  redis_data_test:
+    name: redis_data_test
     
 networks:
   shared_net:
