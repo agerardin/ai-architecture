@@ -5,9 +5,9 @@ from ai_architecture.infra.event_bus.redis_bus import RedisEventBus
 import redis
 
 # Specify docker-compose files for the test environment
+# We could copy file from deploy and update port but for simplicity we keep a separate file here.
 DOCKER_COMPOSE_FILES = [
-    "deploy/redis/docker-compose.yml",
-    # Add more compose files here if needed
+    "tests/redis/docker-compose.yml",
 ]
 
 

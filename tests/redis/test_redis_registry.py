@@ -5,9 +5,9 @@ from ai_architecture.infra.registry.redis_registry import RedisRegistry, Capabil
 
 @pytest.fixture(scope="module")
 def registry():
-    client = redis.Redis(host="localhost", port=6379, socket_timeout=1)
+    client = redis.Redis(host="localhost", port=63379, socket_timeout=1)
     if not client.ping():
-        raise ConnectionError("Could not connect to Redis server at localhost:6379")
+        raise ConnectionError("Could not connect to Redis server at localhost:63379")
     reg = RedisRegistry(redis=client, key="capability_registry")
     reg.r.delete(reg.key)
     yield reg
