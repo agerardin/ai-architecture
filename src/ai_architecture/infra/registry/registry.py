@@ -10,9 +10,9 @@ class Capability(BaseModel):
 
 class Registry(ABC):
     @abstractmethod
-    def register_capabilities(self, capabilities: list[Capability]):
+    async def register_capabilities(self, capabilities: list[Capability]):
         pass
 
     @abstractmethod
-    def get_capability(self, capability: str) -> Capability | None:
+    async def get_capability(self, capability: str) -> Capability | None:
         pass

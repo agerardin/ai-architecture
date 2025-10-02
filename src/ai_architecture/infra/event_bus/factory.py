@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from .event_bus import EventBus
-from .redis_bus import RedisEventBus
+from .event_bus_client import EventBusClientFacade
+from .redis_bus_client import RedisClientFacade
 
 
-def create_event_bus(provider: str = "redis", **kwargs) -> EventBus:
+def create_event_bus(provider: str = "redis", **kwargs) -> EventBusClientFacade:
     if provider == "redis":
-        return RedisEventBus(**kwargs)
+        return RedisClientFacade(**kwargs)
     else:
         raise NotImplementedError(f"Provider {provider} not implemented.")

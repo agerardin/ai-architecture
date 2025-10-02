@@ -2,7 +2,7 @@
 Tests for Redis message publishing and subscribing.
 """
 
-from tests.redis.conftest import MESSAGE_TIMEOUT
+from .conftest import MESSAGE_TIMEOUT
 import pytest
 import asyncio
 from ai_architecture.infra.context.context import SessionContext

@@ -1,13 +1,13 @@
 import os
 import pytest
 import pytest_asyncio
-from ai_architecture.infra.event_bus.redis_bus import RedisEventBus
+from ai_architecture.infra.event_bus.redis_bus_client import RedisClientFacade
 import redis
 
 # Specify docker-compose files for the test environment
 # We could copy file from deploy and update port but for simplicity we keep a separate file here.
 DOCKER_COMPOSE_FILES = [
-    "tests/redis/docker-compose.yml",
+    "tests/test_redis/docker-compose.yml",
 ]
 
 
@@ -33,7 +33,7 @@ async def redis_event_bus(docker_services):
         timeout=REDIS_READY_TIMEOUT, pause=REDIS_READY_PAUSE, check=is_redis_responsive
     )
 
-    bus = RedisEventBus(host="localhost", port=63379)
+    bus = RedisClientFacade(host="localhost", port=63379)
     yield bus
     await bus.close()
 

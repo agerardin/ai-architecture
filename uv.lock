@@ -37,9 +37,11 @@ dev = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "mypy" },
     { name = "pre-commit" },
     { name = "pytest-asyncio" },
     { name = "pytest-docker" },
+    { name = "ruff" },
 ]
 
 [package.metadata]
@@ -59,9 +61,11 @@ provides-extras = ["dev"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "mypy", specifier = ">=1.18.2" },
     { name = "pre-commit", specifier = ">=4.3.0" },
     { name = "pytest-asyncio", specifier = ">=1.2.0" },
     { name = "pytest-docker", specifier = ">=3.2.3" },
+    { name = "ruff", specifier = ">=0.13.2" },
 ]
 
 [[package]]
