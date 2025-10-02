@@ -15,12 +15,12 @@ limitations under the License.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any, Awaitable, Dict
 
 
-class EventBus(ABC):
+class EventBusClientFacade(ABC):
     @abstractmethod
-    async def publish(self, channel: str, message: Dict[str, Any]) -> None:
+    async def publish(self, channel: str, message: Dict[str, Any]) -> Awaitable[Any]:
         pass
 
     @abstractmethod

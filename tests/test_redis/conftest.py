@@ -1,13 +1,13 @@
 import os
 import pytest
 import pytest_asyncio
-from ai_architecture.infra.event_bus.redis_bus import RedisEventBus
+from ai_architecture.infra.event_bus.redis_bus_client import RedisClientFacade
 import redis
 
 # Specify docker-compose files for the test environment
 # We could copy file from deploy and update port but for simplicity we keep a separate file here.
 DOCKER_COMPOSE_FILES = [
-    "tests/redis/docker-compose.yml",
+    "tests/test_redis/docker-compose.yml",
 ]
 
 
@@ -17,7 +17,7 @@ REDIS_READY_TIMEOUT = float(os.getenv("REDIS_READY_TIMEOUT", 10.0))  # seconds
 REDIS_READY_PAUSE = float(os.getenv("REDIS_READY_PAUSE", 0.5))  # seconds
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="function")
 async def redis_event_bus(docker_services):
     # NOTE this will attend to start a docker container which may fail if redis is already running locally on this port
     def is_redis_responsive():
@@ -33,7 +33,7 @@ async def redis_event_bus(docker_services):
         timeout=REDIS_READY_TIMEOUT, pause=REDIS_READY_PAUSE, check=is_redis_responsive
     )
 
-    bus = RedisEventBus(host="localhost", port=63379)
+    bus = RedisClientFacade(host="localhost", port=63379)
     yield bus
     await bus.close()
 
@@ -56,3 +56,9 @@ def docker_compose_project_name() -> str:
 @pytest.fixture(scope="session")
 def docker_setup():
     return ["down -v", "up --build -d"]
+
+
+# Clean up the stack after the session
+@pytest.fixture(scope="session")
+def docker_cleanup():
+    return ["down -v"]
