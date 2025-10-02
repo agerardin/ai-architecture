@@ -17,7 +17,7 @@ REDIS_READY_TIMEOUT = float(os.getenv("REDIS_READY_TIMEOUT", 10.0))  # seconds
 REDIS_READY_PAUSE = float(os.getenv("REDIS_READY_PAUSE", 0.5))  # seconds
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="function")
 async def redis_event_bus(docker_services):
     # NOTE this will attend to start a docker container which may fail if redis is already running locally on this port
     def is_redis_responsive():
@@ -56,3 +56,9 @@ def docker_compose_project_name() -> str:
 @pytest.fixture(scope="session")
 def docker_setup():
     return ["down -v", "up --build -d"]
+
+
+# Clean up the stack after the session
+@pytest.fixture(scope="session")
+def docker_cleanup():
+    return ["down -v"]

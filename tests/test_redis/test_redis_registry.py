@@ -3,7 +3,7 @@ import redis
 from ai_architecture.infra.registry.redis_registry import RedisRegistry, Capability
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def registry(redis_event_bus):
     client = redis.Redis(host="localhost", port=63379, socket_timeout=1)
     if not client.ping():

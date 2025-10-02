@@ -18,6 +18,8 @@ import asyncio
 import json
 from redis.asyncio import Redis
 from typing import Any, Dict, Callable
+
+from redis.typing import ResponseT
 from .event_bus import EventBus
 
 
@@ -29,8 +31,8 @@ class RedisEventBus(EventBus):
             self.redis = Redis(host=host, port=port, db=db)
         self._subscriptions = {}
 
-    async def publish(self, channel: str, message: Dict[str, Any]) -> None:
-        await self.redis.publish(channel, json.dumps(message))
+    async def publish(self, channel: str, message: Dict[str, Any]) -> ResponseT:
+        return await self.redis.publish(channel, json.dumps(message))
 
     async def subscribe(
         self, channel: str, callback: Callable[[Dict[str, Any]], Any]
@@ -71,7 +73,4 @@ class RedisEventBus(EventBus):
         if tasks:
             await asyncio.gather(*tasks, return_exceptions=True)
         self._subscriptions.clear()
-        if hasattr(self.redis, "aclose"):
-            await self.redis.aclose()
-        elif hasattr(self.redis, "close"):
-            await self.redis.close()
+        await self.redis.aclose()
